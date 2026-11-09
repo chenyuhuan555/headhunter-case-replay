@@ -5,6 +5,9 @@ const detail = document.querySelector('#record');
 const list = document.querySelector('#record-list');
 const status = document.querySelector('#status');
 const create = document.querySelector('#new-record');
+const ruleButton = document.querySelector('#rule-submit');
+const deepseekButton = document.querySelector('#deepseek-submit');
+const deepseekNote = document.querySelector('#deepseek-note');
 const field = (form, name) => form.elements.namedItem(name);
 const values = form => Object.fromEntries([...new FormData(form)].map(([key, value]) => [key, value.trim()]));
 let records;
@@ -53,7 +56,7 @@ function open(item) {
   detail.hidden = false;
   status.textContent = '';
   detail.innerHTML = `
-    <p class="record-kicker">业务复盘</p>
+    <p class="record-kicker" id="record-method"></p>
     <h2 id="record-role" tabindex="-1"></h2>
     <div class="advice">
       <p class="record-kicker">建议下一步</p>
@@ -87,6 +90,7 @@ function open(item) {
     <button type="button" class="plain remove-record" id="remove-record">删除记录</button>`;
   const el = selector => detail.querySelector(selector);
   const write = (selector, value) => { el(selector).textContent = value; };
+  write('#record-method', item.method === 'deepseek' ? 'DeepSeek 建议 · 待确认' : '本地规则');
   write('#record-role', item.role);
   write('#next', item.advice.next);
   write('#reason', item.advice.reason);
@@ -157,25 +161,55 @@ function newRecord() {
   document.querySelector('#intake-title').focus();
 }
 
-intake.addEventListener('submit', event => {
+intake.addEventListener('submit', async event => {
   event.preventDefault();
   const input = values(intake);
   if (['role', 'requirements', 'candidates', 'feedback'].some(key => !input[key])) {
     status.textContent = '请补齐岗位代号、必要条件、人选经历和反馈原话。';
     return;
   }
-  const advice = advise(input);
-  const item = { ...input, id: crypto.randomUUID(), advice, question: advice.question };
+  let advice, message = '';
+  if (event.submitter === deepseekButton) {
+    const controls = [...intake.querySelectorAll('input, textarea, button'), ...document.querySelectorAll('.shelf-item'), create].filter(el => !el.disabled);
+    controls.forEach(el => { el.disabled = true; });
+    status.textContent = '正在分析客户反馈…';
+    try {
+      const { requirements, candidates, feedback } = input;
+      const response = await fetch('./api/deepseek', {
+        method: 'POST', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ requirements, candidates, feedback }), signal: AbortSignal.timeout(25000),
+      });
+      const payload = await response.json();
+      if (response.status === 422 && payload.error === 'contact') {
+        status.textContent = '检测到手机号或邮箱，未发送。请删除后重试，也可以按规则生成。';
+        return;
+      }
+      if (response.ok) advice = payload.advice;
+    } catch { /* local rules remain available */ }
+    finally { controls.forEach(el => { el.disabled = false; }); }
+    if (!advice) message = 'DeepSeek 未返回可用建议，已改用本地规则。';
+  }
+  const method = advice ? 'deepseek' : 'rules';
+  advice ??= advise(input);
+  const item = { ...input, id: crypto.randomUUID(), advice, question: advice.question, method };
   if (!save(item, '', status)) return;
   intake.reset();
   open(item);
+  status.textContent = message;
 });
 
 try {
   records = openRecords(window.localStorage);
   shelf();
   create.addEventListener('click', newRecord);
-  intake.querySelector('button').disabled = false;
+  ruleButton.disabled = false;
+  fetch('./api/deepseek', { signal: AbortSignal.timeout(3500) })
+    .then(response => response.ok ? response.json() : null)
+    .then(result => {
+      if (result?.available) deepseekButton.disabled = false;
+      else deepseekNote.textContent = '当前站点未启用 DeepSeek，可按本地规则生成。';
+    })
+    .catch(() => { deepseekNote.textContent = '当前站点未启用 DeepSeek，可按本地规则生成。'; });
 } catch {
   status.textContent = '无法读取本机复盘记录。请检查浏览器存储设置。';
   create.disabled = true;
