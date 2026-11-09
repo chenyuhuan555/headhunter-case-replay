@@ -4,27 +4,48 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f1f0f5">
-  <meta name="description" content="三个首批推荐被退回的猎头案例。读反馈、选下一步，再对照后续。">
+  <meta name="description" content="记录首批推荐反馈，梳理下一步追问并回填客户答复。">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <title>猎头卡单复盘</title>
   <link rel="stylesheet" href="./style.css">
-  <script type="module" src="./app.mjs"></script>
+  <script type="module" src="./workbench.mjs"></script>
 </head>
 <body>
   <main class="shell">
-    <header class="top"><span class="wordmark"><i aria-hidden="true"></i> 招聘案卷</span><span>案例演练</span></header>
-    <section class="hero" aria-labelledby="title">
+    <header class="top"><span class="wordmark"><i aria-hidden="true"></i> 招聘案卷</span><a href="./demo.html">案例演练</a></header>
+    <section class="hero business-hero" aria-labelledby="title">
       <div class="hero-copy">
         <p>首批推荐被退回</p>
         <h1 id="title">猎头卡单复盘<span>。</span></h1>
       </div>
       <div class="hero-art" aria-hidden="true">
         <div class="paper paper-back"><span>首批推荐</span><b></b><b></b><b></b></div>
-        <div class="paper paper-front"><small>客户原话</small><strong id="hero-quote">「太偏平台」</strong><span class="underline"></span></div>
+        <div class="paper paper-front"><small>客户原话</small><strong>「这批先不约」</strong><span class="underline"></span></div>
       </div>
     </section>
-    <nav class="case-switch" aria-label="选择案例" id="case-switch"></nav>
-    <div id="case-content" class="case-layout"></div>
-    <noscript>请启用 JavaScript 后体验案例。</noscript>
+    <div class="business-layout">
+      <section class="sheet business-main" aria-label="复盘工作区">
+        <form id="intake" autocomplete="off">
+          <h2 id="intake-title" tabindex="-1">新建复盘</h2>
+          <div class="form-pair">
+            <label>岗位代号<input name="role" required maxlength="60" placeholder="如：华南质量负责人"></label>
+            <label>退回日期 <small>选填</small><input name="returnedOn" type="date"></label>
+          </div>
+          <label>岗位必要条件<textarea name="requirements" required maxlength="2400" rows="3" placeholder="粘贴当前版本的必要条件"></textarea></label>
+          <label>首批人选关键经历<textarea name="candidates" required maxlength="2400" rows="3" placeholder="用 A、B、C 代号，每人一行"></textarea></label>
+          <label>客户反馈原话<textarea name="feedback" required maxlength="2400" rows="3" placeholder="粘贴收到的原话"></textarea></label>
+          <button type="submit" class="solid" disabled>生成下一问</button>
+        </form>
+        <div id="record" hidden></div>
+        <p id="status" role="status"></p>
+        <noscript>请启用 JavaScript 后使用复盘。</noscript>
+      </section>
+      <aside class="sheet case-shelf" aria-labelledby="shelf-title">
+        <div class="shelf-head"><h2 id="shelf-title">我的复盘</h2><button type="button" class="plain" id="new-record">新建</button></div>
+        <p class="local-note">仅保存在此浏览器。请使用代号，省略联系方式。</p>
+        <div id="record-list"></div>
+      </aside>
+    </div>
   </main>
 </body>
 </html>

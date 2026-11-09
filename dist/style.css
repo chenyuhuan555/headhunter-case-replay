@@ -105,3 +105,61 @@ fieldset:not([disabled]) .option:hover { background: #f3eff8; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+.top a { color: var(--ink); text-underline-offset: 4px; }
+.business-hero { min-height: 186px; }
+.business-hero .hero-art { height: 142px; }
+.business-hero .paper-back { top: 9px; height: 118px; }
+.business-hero .paper-front { top: 21px; min-height: 103px; }
+.business-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(225px, .42fr); gap: 18px; align-items: start; margin-top: 18px; }
+.business-main form { display: grid; gap: 13px; }
+.business-main form[hidden] { display: none; }
+.business-main form label { display: block; font-size: .88rem; font-weight: 700; }
+.business-main label small { color: var(--muted); font-weight: 400; margin-left: 4px; }
+.business-main input, .business-main textarea, .business-main select {
+  display: block; width: 100%; min-width: 0; margin-top: 5px; padding: 9px 11px;
+  border: 1px solid #d4d1e0; border-radius: 11px; color: var(--ink); background: #f7f6fa;
+  font: 400 .91rem/1.55 "PingFang SC", "Microsoft YaHei UI", sans-serif;
+}
+.business-main textarea { resize: vertical; }
+.business-main input::placeholder, .business-main textarea::placeholder { color: #66677c; }
+.form-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .58fr); gap: 12px; }
+.solid, .plain { width: fit-content; min-height: 40px; padding: 8px 15px; border-radius: 10px; border: 1px solid transparent; font-size: .87rem; font-weight: 700; }
+.solid { background: #353652; color: #fff; }
+.solid:hover { background: #4c3e64; }
+.solid:disabled { background: #ebeaf2; color: var(--muted); }
+.plain { background: #f1edf5; border-color: #e2d9e7; color: var(--accent); }
+.plain:hover { background: #e7ddef; }
+.shelf-head, .action-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.shelf-head { justify-content: space-between; }
+.shelf-head h2 { font-size: 1.22rem; }
+.shelf-head .plain { min-height: 36px; padding: 5px 11px; }
+.local-note { color: var(--muted); font-size: .8rem; white-space: pre-line; overflow-wrap: anywhere; }
+.case-shelf .local-note { margin: 8px 0 14px; }
+.shelf-empty { border-top: 1px solid var(--line); padding-top: 12px; color: var(--muted); font-size: .88rem; }
+.shelf-item { display: flex; gap: 10px; align-items: center; justify-content: space-between; width: 100%; padding: 11px; margin-top: 7px; border-radius: 11px; border: 1px solid var(--line); background: #f7f6fa; color: var(--ink); text-align: left; font-size: .85rem; }
+.shelf-item strong { overflow-wrap: anywhere; }
+.shelf-item small { white-space: nowrap; color: var(--accent); }
+.shelf-item[aria-pressed="true"], .shelf-item:hover { background: var(--tint); border-color: #cbbbd2; }
+.record-kicker { color: var(--accent); font-size: .76rem; font-weight: 700; letter-spacing: .08em; }
+#record-role { margin: 3px 0 13px; overflow-wrap: anywhere; }
+.advice { border-radius: 14px; background: var(--tint); padding: 14px 16px; margin-bottom: 17px; overflow-wrap: anywhere; }
+.advice h3 { margin: 3px 0 4px; font-size: 1.13rem; }
+.advice p:not(.record-kicker) { font-size: .85rem; }
+.advice blockquote { padding-left: 11px; border-left: 2px solid #9f789d; margin: 9px 0 4px; font-weight: 700; white-space: pre-wrap; }
+.source-details { margin: 12px 0 18px; border-block: 1px solid var(--line); padding: 9px 0; font-size: .86rem; }
+.source-details summary { cursor: pointer; width: fit-content; font-weight: 700; }
+.source-details dt { margin-top: 7px; }
+.source-details dd { white-space: pre-wrap; overflow-wrap: anywhere; }
+.feedback-status, #status { color: var(--accent); font-size: .84rem; }
+.feedback-status:empty, #status:empty { display: none; }
+#status { margin-top: 8px; }
+.remove-record { margin-top: 16px; }
+@media (max-width: 670px) {
+  .business-layout { grid-template-columns: 1fr; gap: 12px; }
+  .business-hero .paper-back { height: 94px; }
+  .business-hero .paper-front { min-height: 85px; }
+}
+@media (max-width: 380px) {
+  .form-pair { grid-template-columns: 1fr; }
+}
